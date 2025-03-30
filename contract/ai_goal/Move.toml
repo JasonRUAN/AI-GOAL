@@ -1,0 +1,11 @@
+[package]
+name = "ai_goal"
+edition = "2024.beta" 
+license = "MIT"
+authors = ["JasonRUAN (rzexin@gmail.com)"]
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+
+[addresses]
+ai_goal = "0x0"
