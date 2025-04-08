@@ -6,38 +6,32 @@ import type { GoalManager } from "@/types/move";
 import { useGetDynamicFieldObject } from "./useGetDynamicFieldObject";
 import { useGetMultipleGoals } from "./useGetMultipleGoals";
 
-export function useGetMyGoals() {
+export function useGetWitnessGoals() {
     const account = useCurrentAccount();
 
     const objectsData = useGetObject({
         objectId: CONSTANTS.AI_GOAL_CONTRACT.AI_GOAL_SHARED_OBJECT_ID,
     });
 
-    // 提前解析数据，以便获取userGoalParentId
+    // 提前解析数据，以便获取witnessGoalParentId
     const parsedGoals = objectsData?.data?.content as SuiParsedData | undefined;
     const goalManager =
         parsedGoals && "fields" in parsedGoals
             ? (parsedGoals.fields as GoalManager)
             : undefined;
-    const userGoalParentId = goalManager?.user_goals?.fields?.id?.id;
+    const witnessGoalParentId = goalManager?.witness_goals?.fields?.id?.id;
     const goalParentId = goalManager?.goals?.fields?.id?.id;
 
-    // console.log(">>>>>>>>>>>> ", userGoalParentId, goalParentId);
-
-    const { data: userGoalIds } = useGetDynamicFieldObject({
-        parentId: userGoalParentId || "",
+    const { data: witnessGoalIds } = useGetDynamicFieldObject({
+        parentId: witnessGoalParentId || "",
         fieldType: "address",
         fieldValue: account?.address || "",
     });
 
-    // console.log(">>>>>>>>>>>> ", userGoalIds);
-
     const { data: goals } = useGetMultipleGoals({
         parentId: goalParentId || "",
-        goalIds: userGoalIds as string[],
+        goalIds: witnessGoalIds as string[],
     });
-
-    // console.log(JSON.stringify(goals, null, 2));
 
     return {
         data: goals || [],

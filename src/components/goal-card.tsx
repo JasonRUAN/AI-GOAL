@@ -59,11 +59,11 @@ export function GoalCard({ goal }: GoalCardProps) {
                 </div>
             </CardContent>
             <CardFooter>
-                <Link href={`/goals/${goal.id}`} className="w-full">
-                    <Button variant="ghost" className="w-full">
-                        查看详情
-                    </Button>
-                </Link>
+                {/* <Link href={`/goals/${goal.id}`} className="w-full"> */}
+                <Button variant="ghost" className="w-full">
+                    查看详情
+                </Button>
+                {/* </Link> */}
             </CardFooter>
         </Card>
     );

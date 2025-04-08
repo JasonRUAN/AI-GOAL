@@ -1,7 +1,7 @@
 import { CONSTANTS } from "@/constants";
 import { useGetObject } from "./useGetObject";
-import { SuiParsedData } from "@mysten/sui/client";
-import { GoalManager } from "@/types/move";
+import type { SuiParsedData } from "@mysten/sui/client";
+import type { GoalManager } from "@/types/move";
 import { useGetMultipleGoals } from "./useGetMultipleGoals";
 
 export function useGetAllGoals() {

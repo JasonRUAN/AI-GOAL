@@ -1,5 +1,4 @@
 import { useSuiClientQuery } from "@mysten/dapp-kit";
-import toast from "react-hot-toast";
 
 interface DynamicFieldObject {
     parentId: string;
@@ -12,7 +11,6 @@ export function useGetDynamicFieldObject({
     fieldType,
     fieldValue,
 }: DynamicFieldObject) {
-    // const { data, isPending, error } = useSuiClientQuery(
     return useSuiClientQuery(
         "getDynamicFieldObject",
         {
@@ -24,7 +22,6 @@ export function useGetDynamicFieldObject({
         },
         {
             enabled: !!parentId && !!fieldType && !!fieldValue,
-            // select: (data) => data.data,
             select: (data) => {
                 if (data.data?.content && "fields" in data.data.content) {
                     if (
@@ -40,16 +37,4 @@ export function useGetDynamicFieldObject({
             },
         }
     );
-
-    // if (error) {
-    //     toast.error(`get dynamic field object failed: ${error.message}`);
-    //     return;
-    // }
-
-    // if (isPending || !data) {
-    //     toast.error("loading data...");
-    //     return;
-    // }
-
-    // return data;
 }

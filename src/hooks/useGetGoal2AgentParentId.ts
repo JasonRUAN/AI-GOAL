@@ -3,7 +3,7 @@ import { useGetObject } from "./useGetObject";
 import type { GoalManager } from "@/types/move";
 import type { SuiParsedData } from "@mysten/sui/client";
 
-export function useGetGoalParentId() {
+export function useGetGoal2AgentParentId() {
     const objectsData = useGetObject({
         objectId: CONSTANTS.AI_GOAL_CONTRACT.AI_GOAL_SHARED_OBJECT_ID,
     });
@@ -14,7 +14,7 @@ export function useGetGoalParentId() {
             ? (parsedGoals.fields as GoalManager)
             : undefined;
 
-    const goalParentId = goalManager?.goals?.fields?.id?.id;
+    const goal2AgentParentId = goalManager?.goal_2_agent?.fields?.id?.id;
 
-    return goalParentId;
+    return goal2AgentParentId;
 }

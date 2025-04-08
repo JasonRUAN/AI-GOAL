@@ -9,45 +9,59 @@ import {
     UserGroupIcon,
     TrophyIcon,
     ListBulletIcon,
+    LanguageIcon,
+    UserIcon,
 } from "@heroicons/react/24/outline";
 import { ConnectButton } from "@mysten/dapp-kit";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 interface NavItem {
-    name: string;
+    key: string;
     path: string;
     icon: React.ReactNode;
 }
 
 export default function Sidebar() {
     const pathname = usePathname();
+    const { t, language, setLanguage } = useLanguage();
 
     const navItems: NavItem[] = [
         {
-            name: "首页",
+            key: "home",
             path: "/",
             icon: <HomeIcon className="w-6 h-6" />,
         },
         {
-            name: "创建目标",
+            key: "createGoal",
             path: "/create",
             icon: <PlusCircleIcon className="w-6 h-6" />,
         },
         {
-            name: "我的目标",
+            key: "myGoals",
             path: "/my-goals",
             icon: <TrophyIcon className="w-6 h-6" />,
         },
         {
-            name: "见证目标",
-            path: "/witness",
+            key: "witnessGoals",
+            path: "/witness-goals",
             icon: <UserGroupIcon className="w-6 h-6" />,
         },
         {
-            name: "所有目标",
+            key: "allGoals",
             path: "/all-goals",
             icon: <ListBulletIcon className="w-6 h-6" />,
         },
+        {
+            key: "profile",
+            path: "/profile",
+            icon: <UserIcon className="w-6 h-6" />,
+        },
     ];
+
+    // 切换语言
+    const toggleLanguage = () => {
+        setLanguage(language === "zh" ? "en" : "zh");
+    };
 
     return (
         <div className="flex flex-col h-screen bg-white border-r border-gray-200 w-64 fixed left-0 top-0">
@@ -70,15 +84,27 @@ export default function Sidebar() {
                                 }`}
                             >
                                 {item.icon}
-                                <span className="ml-3">{item.name}</span>
+                                <span className="ml-3">{t(item.key)}</span>
                             </Link>
                         </li>
                     ))}
                 </ul>
             </nav>
 
-            {/* 底部用户信息 */}
+            {/* 底部区域 */}
             <div className="border-t border-gray-200 p-4">
+                {/* 语言切换开关 */}
+                <div className="flex justify-between items-center mb-4">
+                    <button
+                        onClick={toggleLanguage}
+                        className="flex items-center px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 w-full"
+                    >
+                        <LanguageIcon className="w-6 h-6" />
+                        <span className="ml-3">{t("language")}</span>
+                    </button>
+                </div>
+
+                {/* 钱包连接 */}
                 <div className="flex justify-center items-center">
                     <ConnectButton />
                 </div>

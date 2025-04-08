@@ -1,6 +1,5 @@
 export interface AIConfig {
     name: string;
-    clients: string[];
     modelProvider: string;
     settings: {
         voice: {

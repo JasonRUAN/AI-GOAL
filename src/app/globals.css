@@ -136,3 +136,32 @@
 .animate-pulse-slow {
   animation: pulse-slow 3s ease-in-out infinite;
 }
+
+/* 红色渐变边框效果 */
+.border-gradient-red {
+  border: 1px solid transparent;
+  background-image: linear-gradient(to right, white, white),
+                    linear-gradient(to right, #ff0000, #ff6b6b);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  position: relative;
+}
+
+.dark .border-gradient-red {
+  background-image: linear-gradient(to right, #21062D, #21062D),
+                    linear-gradient(to right, #ff0000, #ff6b6b);
+}
+
+.border-gradient-red:focus {
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+@keyframes glowing-red {
+  0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.3); }
+  50% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); }
+  100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.3); }
+}
+
+.border-gradient-red {
+  animation: glowing-red 2s infinite;
+}

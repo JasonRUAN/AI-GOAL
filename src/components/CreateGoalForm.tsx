@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,44 +37,75 @@ import { CalendarIcon, Plus, X } from "lucide-react";
 import { useCreateGoal } from "@/mutations/goal";
 import { useQueryClient } from "@tanstack/react-query";
 import { CONSTANTS, QueryKey } from "@/constants";
-
-const formSchema = z.object({
-    title: z
-        .string()
-        .min(2, {
-            message: "目标标题至少需要2个字符",
-        })
-        .max(50, {
-            message: "目标标题不能超过50个字符",
-        }),
-    description: z
-        .string()
-        .min(10, {
-            message: "目标描述至少需要10个字符",
-        })
-        .max(500, {
-            message: "目标描述不能超过500个字符",
-        }),
-    aiSuggestion: z.string().max(500, {
-        message: "AI建议不能超过500个字符",
-    }),
-    endDate: z.date({
-        required_error: "请选择目标完成日期",
-    }),
-    stake: z.string().min(1, {
-        message: "请输入保证金金额",
-    }),
-    witnesses: z.array(z.string()).min(1, {
-        message: "至少需要一位见证人",
-    }),
-});
+import { useLanguage } from "@/providers/LanguageProvider";
 
 export function CreateGoalForm() {
     const router = useRouter();
     const queryClient = useQueryClient();
+    const { t, language } = useLanguage();
     const [witnesses, setWitnesses] = useState<string[]>([]);
     const [newWitness, setNewWitness] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // 根据当前语言创建表单验证架构
+    const getFormSchema = () =>
+        z.object({
+            title: z
+                .string()
+                .min(2, {
+                    message:
+                        language === "zh"
+                            ? "目标标题至少需要2个字符"
+                            : "Title must be at least 2 characters",
+                })
+                .max(50, {
+                    message:
+                        language === "zh"
+                            ? "目标标题不能超过50个字符"
+                            : "Title cannot exceed 50 characters",
+                }),
+            description: z
+                .string()
+                .min(10, {
+                    message:
+                        language === "zh"
+                            ? "目标描述至少需要10个字符"
+                            : "Description must be at least 10 characters",
+                })
+                .max(500, {
+                    message:
+                        language === "zh"
+                            ? "目标描述不能超过500个字符"
+                            : "Description cannot exceed 500 characters",
+                }),
+            aiSuggestion: z.string().max(500, {
+                message:
+                    language === "zh"
+                        ? "AI建议不能超过500个字符"
+                        : "AI suggestion cannot exceed 500 characters",
+            }),
+            endDate: z.date({
+                required_error:
+                    language === "zh"
+                        ? "请选择目标完成日期"
+                        : "Please select a deadline",
+            }),
+            stake: z.string().min(1, {
+                message:
+                    language === "zh"
+                        ? "请输入保证金金额"
+                        : "Please enter a stake amount",
+            }),
+            witnesses: z.array(z.string()).min(1, {
+                message:
+                    language === "zh"
+                        ? "至少需要一位见证人"
+                        : "At least one witness is required",
+            }),
+        });
+
+    const formSchema = getFormSchema();
 
     const { mutate: createGoalMutation } = useCreateGoal();
 
@@ -89,8 +120,14 @@ export function CreateGoalForm() {
         },
     });
 
+    // 当语言变化时更新表单验证规则
+    useEffect(() => {
+        form.clearErrors();
+    }, [language, form]);
+
     function onSubmit(values: z.infer<typeof formSchema>) {
         // console.log(values);
+        setIsSubmitting(true);
         const goalInfo = {
             title: values.title,
             description: values.description,
@@ -116,9 +153,16 @@ export function CreateGoalForm() {
 
                 // 跳转到我的目标页面
                 router.push("/my-goals");
+                setIsSubmitting(false);
             },
             onError: (error) => {
-                console.error("创建目标失败:", error);
+                console.error(
+                    language === "zh"
+                        ? "创建目标失败:"
+                        : "Failed to create goal:",
+                    error
+                );
+                setIsSubmitting(false);
             },
         });
     }
@@ -144,7 +188,10 @@ export function CreateGoalForm() {
 
         if (!title || !description) {
             form.setError("aiSuggestion", {
-                message: "请先填写目标标题和描述，以便生成个性化AI建议",
+                message:
+                    language === "zh"
+                        ? "请先填写目标标题和描述，以便生成个性化AI建议"
+                        : "Please fill in the goal title and description first to generate personalized AI suggestions",
             });
             return;
         }
@@ -152,7 +199,10 @@ export function CreateGoalForm() {
         try {
             // 显示加载状态
             setIsGenerating(true);
-            form.setValue("aiSuggestion", "AI正在思考中...");
+            form.setValue(
+                "aiSuggestion",
+                language === "zh" ? "AI正在思考中..." : "AI is thinking..."
+            );
 
             // 调用AI生成建议的API
             const response = await fetch(
@@ -163,25 +213,41 @@ export function CreateGoalForm() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        content: `目标标题：${title}\n目标描述：${description}`,
+                        content:
+                            language === "zh"
+                                ? `目标标题：${title}\n目标描述：${description}`
+                                : `Goal Title: ${title}\nGoal Description: ${description}`,
                     }),
                 }
             );
 
             if (!response.ok) {
-                throw new Error("生成建议失败");
+                throw new Error(
+                    language === "zh"
+                        ? "生成建议失败"
+                        : "Failed to generate suggestion"
+                );
             }
 
             const data = await response.json();
             console.log(">>> data", JSON.stringify(data, null, 2));
             form.setValue(
                 "aiSuggestion",
-                JSON.stringify(data.message, null, 2)
+                data.message
+                // JSON.stringify(data.message, null, 2)
             );
         } catch (error) {
-            console.error("生成AI建议失败:", error);
+            console.error(
+                language === "zh"
+                    ? "生成AI建议失败:"
+                    : "Failed to generate AI suggestion:",
+                error
+            );
             form.setError("aiSuggestion", {
-                message: "生成建议时出错，请稍后再试",
+                message:
+                    language === "zh"
+                        ? "生成建议时出错，请稍后再试"
+                        : "Error generating suggestion, please try again later",
             });
             form.setValue("aiSuggestion", "");
         } finally {
@@ -192,9 +258,11 @@ export function CreateGoalForm() {
     return (
         <Card className="w-full max-w-2xl mx-auto backdrop-blur-sm bg-white/10 dark:bg-gray-800/30 border border-gray-200 dark:border-gray-700">
             <CardHeader>
-                <CardTitle className="text-2xl">创建新目标</CardTitle>
+                <CardTitle className="text-2xl">{t("createNewGoal")}</CardTitle>
                 <CardDescription>
-                    设置你的目标，邀请见证人，锁定保证金，开始你的目标之旅
+                    {language === "zh"
+                        ? "设置你的目标，邀请见证人，锁定保证金，开始你的目标之旅"
+                        : "Set your goal, invite witnesses, lock in your stake, and begin your goal journey"}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -208,15 +276,21 @@ export function CreateGoalForm() {
                             name="title"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>目标标题</FormLabel>
+                                    <FormLabel>{t("goalTitle")}</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="例如：每天跑步5公里"
+                                            placeholder={
+                                                language === "zh"
+                                                    ? "例如：每天跑步5公里"
+                                                    : "e.g., Run 5km every day"
+                                            }
                                             {...field}
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        简洁明了地描述你的目标
+                                        {language === "zh"
+                                            ? "简洁明了地描述你的目标"
+                                            : "Describe your goal concisely"}
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -228,16 +302,24 @@ export function CreateGoalForm() {
                             name="description"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>目标描述</FormLabel>
+                                    <FormLabel>
+                                        {t("goalDescription")}
+                                    </FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder="详细描述你的目标，包括如何验证目标是否完成"
+                                            placeholder={
+                                                language === "zh"
+                                                    ? "详细描述你的目标，包括如何验证目标是否完成"
+                                                    : "Describe your goal in detail, including how to verify if it's completed"
+                                            }
                                             className="resize-none"
                                             {...field}
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        详细描述你的目标，以便见证人能够清楚了解
+                                        {language === "zh"
+                                            ? "详细描述你的目标，以便见证人能够清楚了解"
+                                            : "Describe your goal in detail so witnesses can clearly understand"}
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -249,12 +331,20 @@ export function CreateGoalForm() {
                             name="aiSuggestion"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>AI建议</FormLabel>
+                                    <FormLabel>
+                                        {language === "zh"
+                                            ? "AI建议"
+                                            : "AI Suggestion"}
+                                    </FormLabel>
                                     <div className="relative">
                                         <FormControl>
                                             <Textarea
-                                                placeholder="AI将根据你的目标提供建议和指导"
-                                                className="resize-none pr-12"
+                                                placeholder={
+                                                    language === "zh"
+                                                        ? "AI将根据你的目标提供建议和指导"
+                                                        : "AI will provide suggestions and guidance based on your goal"
+                                                }
+                                                className="resize-none pr-12 border-gradient-red focus:ring-2 focus:ring-red-500/50"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -280,7 +370,9 @@ export function CreateGoalForm() {
                                         </Button>
                                     </div>
                                     <FormDescription>
-                                        AI将根据你的目标提供个性化的建议和指导
+                                        {language === "zh"
+                                            ? "AI将根据你的目标提供个性化的建议和指导"
+                                            : "AI will provide personalized suggestions and guidance based on your goal"}
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -292,7 +384,7 @@ export function CreateGoalForm() {
                             name="endDate"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                    <FormLabel>完成日期</FormLabel>
+                                    <FormLabel>{t("deadline")}</FormLabel>
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
@@ -310,7 +402,11 @@ export function CreateGoalForm() {
                                                             "PPP"
                                                         )
                                                     ) : (
-                                                        <span>选择日期</span>
+                                                        <span>
+                                                            {language === "zh"
+                                                                ? "选择日期"
+                                                                : "Select date"}
+                                                        </span>
                                                     )}
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
@@ -340,7 +436,9 @@ export function CreateGoalForm() {
                                         </PopoverContent>
                                     </Popover>
                                     <FormDescription>
-                                        选择你计划完成目标的日期
+                                        {language === "zh"
+                                            ? "选择你计划完成目标的日期"
+                                            : "Select the date you plan to complete your goal"}
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -352,7 +450,11 @@ export function CreateGoalForm() {
                             name="stake"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>保证金 (SUI)</FormLabel>
+                                    <FormLabel>
+                                        {language === "zh"
+                                            ? "保证金 (SUI)"
+                                            : "Stake (SUI)"}
+                                    </FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
@@ -363,7 +465,9 @@ export function CreateGoalForm() {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        设置你愿意锁定的保证金金额，如果未完成目标，这笔金额将分给见证人
+                                        {language === "zh"
+                                            ? "设置你愿意锁定的保证金金额，如果未完成目标，这笔金额将分给见证人"
+                                            : "Set the amount of stake you're willing to lock in. If you don't complete the goal, this amount will be distributed to the witnesses"}
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -375,11 +479,15 @@ export function CreateGoalForm() {
                             name="witnesses"
                             render={() => (
                                 <FormItem>
-                                    <FormLabel>见证人</FormLabel>
+                                    <FormLabel>{t("witness")}</FormLabel>
                                     <div className="flex gap-2">
                                         <FormControl>
                                             <Input
-                                                placeholder="输入见证人的钱包地址"
+                                                placeholder={
+                                                    language === "zh"
+                                                        ? "输入见证人的钱包地址"
+                                                        : "Enter the witness's wallet address"
+                                                }
                                                 value={newWitness}
                                                 onChange={(e) =>
                                                     setNewWitness(
@@ -427,7 +535,9 @@ export function CreateGoalForm() {
                                         ))}
                                     </div>
                                     <FormDescription>
-                                        添加能够验证你目标完成情况的见证人
+                                        {language === "zh"
+                                            ? "添加能够验证你目标完成情况的见证人"
+                                            : "Add witnesses who can verify your goal completion"}
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -437,8 +547,22 @@ export function CreateGoalForm() {
                         <Button
                             type="submit"
                             className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                            disabled={isSubmitting}
                         >
-                            创建目标
+                            {isSubmitting ? (
+                                <div className="flex items-center justify-center">
+                                    <div className="h-5 w-5 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                    <span>
+                                        {language === "zh"
+                                            ? "提交中..."
+                                            : "Submitting..."}
+                                    </span>
+                                </div>
+                            ) : language === "zh" ? (
+                                "创建目标"
+                            ) : (
+                                "Create Goal"
+                            )}
                         </Button>
                     </form>
                 </Form>

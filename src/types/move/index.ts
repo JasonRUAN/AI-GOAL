@@ -5,7 +5,9 @@ export type GoalManager = {
     failed_goals: string[];
     goal_count: string;
     goals: DynamicFields;
+    goal_2_agent: DynamicFields;
     user_goals: DynamicFields;
+    witness_goals: DynamicFields;
 };
 
 export type UserGoalIds = {
@@ -34,7 +36,7 @@ export type GoalFields = {
 export type GoalDetail = {
     ai_suggestion: string;
     amount: string;
-    comment_counter: string;
+    comment_counter: number;
     comments: DynamicFields;
     confirmations: string[];
     created_at: string;
@@ -48,4 +50,29 @@ export type GoalDetail = {
     status: number;
     title: string;
     witnesses: string[];
+};
+
+export type CommentFields = {
+    type: string;
+    fields: CommentDetail;
+};
+
+export type CommentDetail = {
+    id: string;
+    creator: string;
+    content: string;
+    created_at: string;
+};
+
+export type ProgressUpdateFields = {
+    type: string;
+    fields: ProgressUpdateDetail;
+};
+
+export type ProgressUpdateDetail = {
+    id: string;
+    content: string;
+    proof_file_blob_id: string;
+    creator: string;
+    created_at: string;
 };

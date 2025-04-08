@@ -109,7 +109,7 @@ export const elizaClient = {
             body: formData,
         });
     },
-    saveConfig: async (config: AIConfig) => {
+    createAgent: async (config: AIConfig) => {
         try {
             const response = await fetcher({
                 url: "/agent/start",
@@ -117,12 +117,13 @@ export const elizaClient = {
                 body: { characterJson: config },
             });
             console.log("Config saved successfully:", response);
+            return (response.id as string) || "";
         } catch (error) {
             console.error("Failed to save config:", error);
         }
     },
 
-    updateConfig: async (config: AIConfig, agentId: string) => {
+    updateAgent: async (config: AIConfig, agentId: string) => {
         try {
             const deleteResponse = await fetch(
                 `${CONSTANTS.ELIZA_BASE_URL}/agents/${agentId}`,

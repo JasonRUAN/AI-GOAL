@@ -1,3 +1,5 @@
+"use client";
+
 import { format } from "date-fns";
 import {
     Card,
@@ -9,11 +11,18 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Clock, Coins, Users } from "lucide-react";
+import { CheckCircle, Clock, Coins, Users, ExternalLink } from "lucide-react";
 import { GoalDetail } from "@/types/move";
 import Link from "next/link";
+import { ProgressUpdateDialog } from "@/components/ProgressUpdateDialog";
+import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useLanguage } from "@/providers/LanguageProvider";
 
 export function GoalCard({ goal }: { goal: GoalDetail }) {
+    const account = useCurrentAccount();
+    const { language } = useLanguage();
+    const isCreator = goal.creator === account?.address;
+
     const getStatusColor = (status: number) => {
         switch (status) {
             case 1:
@@ -28,11 +37,11 @@ export function GoalCard({ goal }: { goal: GoalDetail }) {
     const getStatusText = (status: number) => {
         switch (status) {
             case 1:
-                return "已完成";
+                return language === "zh" ? "已完成" : "Completed";
             case 2:
-                return "失败";
+                return language === "zh" ? "失败" : "Failed";
             default:
-                return "进行中";
+                return language === "zh" ? "进行中" : "In Progress";
         }
     };
 
@@ -54,12 +63,16 @@ export function GoalCard({ goal }: { goal: GoalDetail }) {
                     {goal.progress_percentage !== undefined && (
                         <>
                             <div className="flex justify-between text-sm">
-                                <span>目标进度</span>
+                                <span>
+                                    {language === "zh"
+                                        ? "目标进度"
+                                        : "Goal Progress"}
+                                </span>
                                 <span>{goal.progress_percentage}%</span>
                             </div>
                             <Progress
                                 value={goal.progress_percentage}
-                                className="h-2"
+                                className="h-2.5 rounded-full [&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-purple-600"
                             />
                         </>
                     )}
@@ -69,7 +82,7 @@ export function GoalCard({ goal }: { goal: GoalDetail }) {
                     <div className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />
                         <span>
-                            截止日期:{" "}
+                            {language === "zh" ? "截止日期: " : "Deadline: "}
                             {format(
                                 new Date(Number(goal.deadline)),
                                 "yyyy-MM-dd"
@@ -78,45 +91,67 @@ export function GoalCard({ goal }: { goal: GoalDetail }) {
                     </div>
                     <div className="flex items-center gap-1">
                         <Coins className="h-4 w-4" />
-                        <span>保证金: {Number(goal.amount) / 10 ** 9} SUI</span>
+                        <span>
+                            {language === "zh" ? "保证金: " : "Stake: "}
+                            {Number(goal.amount) / 10 ** 9} SUI
+                        </span>
                     </div>
                     <div className="flex items-center gap-1">
                         <Users className="h-4 w-4" />
-                        <span>见证人: {goal.witnesses?.length}人</span>
+                        <span>
+                            {language === "zh"
+                                ? `见证人: ${goal.witnesses?.length}人`
+                                : `Witnesses: ${goal.witnesses?.length}`}
+                        </span>
                     </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {goal.status !== 1 && isCreator && (
+                        <ProgressUpdateDialog
+                            goalId={goal.id}
+                            currentProgress={goal.progress_percentage || 0}
+                            onProgressUpdated={() => {
+                                // 可以添加进度更新后的回调，如果需要
+                            }}
+                            isCreator={isCreator}
+                        />
+                    )}
+                    <Button
+                        className={`w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ${
+                            goal.status !== 1 && isCreator
+                                ? "sm:col-start-2"
+                                : "col-span-full"
+                        }`}
+                        asChild
+                    >
+                        <Link
+                            href={`/goals/${goal.id}`}
+                            className="flex items-center justify-center"
+                        >
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            {language === "zh" ? "查看详情" : "View Details"}
+                        </Link>
+                    </Button>
                 </div>
 
                 {goal.ai_suggestion && (
                     <div className="mt-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                         <div className="flex items-start gap-2">
-                            <CheckCircle className="h-5 w-5 text-purple-500 mt-0.5" />
-                            <div>
+                            <CheckCircle className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" />
+                            <div className="flex-1 overflow-hidden">
                                 <h4 className="font-medium text-sm mb-1">
-                                    AI 建议
+                                    {language === "zh"
+                                        ? "AI 建议"
+                                        : "AI Suggestion"}
                                 </h4>
-                                <p className="text-sm text-gray-600 dark:text-gray-300">
+                                <p className="text-sm text-gray-600 dark:text-gray-300 break-words whitespace-pre-line">
                                     {goal.ai_suggestion}
                                 </p>
                             </div>
                         </div>
                     </div>
                 )}
-
-                <div className="flex flex-col sm:flex-row gap-2">
-                    <Button
-                        variant="outline"
-                        className="flex-1 text-sm py-1 h-8"
-                    >
-                        更新进度
-                    </Button>
-                    <Button
-                        variant="outline"
-                        className="flex-1 text-sm py-1 h-8"
-                        asChild
-                    >
-                        <Link href={`/goals/${goal.id}`}>查看详情</Link>
-                    </Button>
-                </div>
             </CardContent>
         </Card>
     );

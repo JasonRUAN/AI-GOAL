@@ -2,17 +2,17 @@
 
 import { GoalCard } from "@/components/GoalCard";
 import { Button } from "@/components/ui/button";
-import { useGetMyGoals } from "@/hooks/useGetMyGoals";
+import { useGetWitnessGoals } from "@/hooks/useGetWitnessGoals";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useLanguage } from "@/providers/LanguageProvider";
 
-export default function MyGoalsPage() {
+export default function WitnessGoalsPage() {
     const router = useRouter();
     const { t, language } = useLanguage();
-    const { data: goals, isLoading } = useGetMyGoals();
+    const { data: goals, isLoading } = useGetWitnessGoals();
     const [activeTab, setActiveTab] = useState("active");
 
     const filteredGoals = goals?.filter((goal) => {
@@ -34,7 +34,7 @@ export default function MyGoalsPage() {
     return (
         <div className="container mx-auto py-8 px-4">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">{t("myGoals")}</h1>
+                <h1 className="text-3xl font-bold">{t("witnessGoals")}</h1>
                 <Button
                     onClick={() => router.push("/create")}
                     className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
@@ -70,8 +70,8 @@ export default function MyGoalsPage() {
                     <h3 className="text-xl font-semibold mb-2">
                         {activeTab === "all"
                             ? language === "zh"
-                                ? "还没有创建任何目标"
-                                : "No goals created yet"
+                                ? "还没有见证的目标"
+                                : "No goals to witness yet"
                             : activeTab === "active"
                             ? language === "zh"
                                 ? "没有进行中的目标"
@@ -85,13 +85,9 @@ export default function MyGoalsPage() {
                             : "No failed goals"}
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400 mb-4">
-                        {activeTab === "all"
-                            ? language === "zh"
-                                ? "创建你的第一个目标，开始你的自我提升之旅"
-                                : "Create your first goal and start your self-improvement journey"
-                            : language === "zh"
-                            ? "继续努力，创建新的目标"
-                            : "Keep going, create new goals"}
+                        {language === "zh"
+                            ? "你还没有被邀请见证任何目标"
+                            : "You haven't been invited to witness any goals yet"}
                     </p>
                     <Button
                         onClick={() => router.push("/create")}
