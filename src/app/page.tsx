@@ -263,7 +263,6 @@ export default function Home() {
                         {language === "zh"
                             ? "加入我们的平台，通过AI技术、区块链技术和社交激励，让你的每一个目标都能顺利达成。"
                             : "Join our platform and achieve your goals with AI technology, blockchain technology and social incentives."}
-
                     </p>
                     <Link href="/create">
                         <Button

@@ -79,11 +79,11 @@ export function CreateGoalForm() {
                             ? "目标描述不能超过500个字符"
                             : "Description cannot exceed 500 characters",
                 }),
-            aiSuggestion: z.string().max(500, {
+            aiSuggestion: z.string().max(2000, {
                 message:
                     language === "zh"
-                        ? "AI建议不能超过500个字符"
-                        : "AI suggestion cannot exceed 500 characters",
+                        ? "AI建议不能超过2000个字符"
+                        : "AI suggestion cannot exceed 2000 characters",
             }),
             endDate: z.date({
                 required_error:

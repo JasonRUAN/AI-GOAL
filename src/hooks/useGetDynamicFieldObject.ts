@@ -28,8 +28,6 @@ export function useGetDynamicFieldObject({
                         data.data.content.fields &&
                         "value" in data.data.content.fields
                     ) {
-                        // return (data.data.content.fields.value as GoalFields)
-                        //     .fields;
                         return data.data.content.fields.value;
                     }
                 }

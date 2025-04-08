@@ -42,6 +42,7 @@ export function ProgressUpdateDialog({
     const [proofFile, setProofFile] = useState<File | null>(null);
     const [proofBlobId, setProofBlobId] = useState("");
     const [isUploading, setIsUploading] = useState(false);
+    const [isFileUploaded, setIsFileUploaded] = useState(false);
 
     const { mutate: updateProgress, isPending: isUpdatingProgress } =
         useUpdateProgress();
@@ -51,6 +52,7 @@ export function ProgressUpdateDialog({
         setProgressDialogOpen(open);
         if (open) {
             setProgressPercentage(currentProgress);
+            setIsFileUploaded(false);
         }
     };
 
@@ -95,6 +97,7 @@ export function ProgressUpdateDialog({
 
             // 使用 rootHash 作为文件的唯一标识
             setProofBlobId(data.rootHash);
+            setIsFileUploaded(true);
             toast.success(
                 language === "zh"
                     ? data.message || "文件上传成功"
@@ -248,7 +251,8 @@ export function ProgressUpdateDialog({
                                 onClick={handleProgressSubmit}
                                 disabled={
                                     isUpdatingProgress ||
-                                    !progressContent.trim()
+                                    !progressContent.trim() ||
+                                    !isFileUploaded
                                 }
                                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
                             >
