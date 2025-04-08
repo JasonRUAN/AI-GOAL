@@ -67,7 +67,9 @@ export default function Sidebar() {
         <div className="flex flex-col h-screen bg-white border-r border-gray-200 w-64 fixed left-0 top-0">
             {/* Logo 区域 */}
             <div className="flex items-center justify-center h-16 border-b border-gray-200">
-                <h1 className="text-xl font-bold text-gray-800">AI GOAL</h1>
+                <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 text-3xl font-bold">
+                    AI GOAL
+                </h1>
             </div>
 
             {/* 导航菜单 */}
