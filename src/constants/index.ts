@@ -38,5 +38,5 @@ export const CONSTANTS = {
         "https://912a9ee0476329a340c214c0363d978bf252ff8c-3001.dstack-prod5.phala.network",
     // BACKEND_URL: "http://localhost:5050",
     BACKEND_URL:
-        "https://81aeb770019bdda57253d38d90183a2ce47cd94a-5050.dstack-prod5.phala.network",
+        "https://c46307fd94aaf26c0e093e1c12e615f2badc1192-5050.dstack-prod5.phala.network",
 };
