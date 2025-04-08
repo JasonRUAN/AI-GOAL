@@ -181,8 +181,8 @@ export default function Home() {
                 </div>
                 <p className="mt-6 text-xl text-gray-600 dark:text-gray-300 max-w-2xl">
                     {language === "zh"
-                        ? "通过区块链技术和朋友见证，让你的每一个小目标都能顺利达成"
-                        : "Achieve your goals with blockchain technology and witness from friends"}
+                        ? "通过AI技术、区块链技术和朋友见证，让你的每一个目标都能顺利达成"
+                        : "Achieve your goals with AI technology, blockchain technology and witness from friends"}
                 </p>
                 <div className="mt-10 flex flex-wrap gap-4 justify-center">
                     <Link href="/create">
@@ -261,8 +261,9 @@ export default function Home() {
                     </h2>
                     <p className="text-xl mb-10 max-w-2xl mx-auto">
                         {language === "zh"
-                            ? "加入我们的平台，通过区块链技术和社交激励，让你的每一个小目标都能顺利达成。"
-                            : "Join our platform and achieve your goals with blockchain technology and social incentives."}
+                            ? "加入我们的平台，通过AI技术、区块链技术和社交激励，让你的每一个目标都能顺利达成。"
+                            : "Join our platform and achieve your goals with AI technology, blockchain technology and social incentives."}
+
                     </p>
                     <Link href="/create">
                         <Button
