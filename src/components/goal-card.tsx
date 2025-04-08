@@ -8,8 +8,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 
 interface GoalCardProps {
     goal: {

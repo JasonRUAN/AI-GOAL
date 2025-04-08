@@ -47,7 +47,7 @@ interface GoalDetailProps {
 
 export function GoalDetail({ id }: GoalDetailProps) {
     const account = useCurrentAccount();
-    const { language, t } = useLanguage();
+    const { language } = useLanguage();
     const address = account?.address;
     const [commentText, setCommentText] = useState("");
     const [localComments, setLocalComments] = useState<CommentFields[]>([]);
