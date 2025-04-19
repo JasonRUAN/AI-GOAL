@@ -67,10 +67,13 @@ export function ProgressUpdateDialog({
             const formData = new FormData();
             formData.append("file", file);
 
-            const response = await fetch(`${CONSTANTS.BACKEND_URL}/0g/upload`, {
-                method: "POST",
-                body: formData,
-            });
+            const response = await fetch(
+                `${CONSTANTS.BACKEND_URL}/walrus/upload`,
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
 
             if (!response.ok) {
                 throw new Error("文件上传失败");
@@ -79,7 +82,7 @@ export function ProgressUpdateDialog({
             const data = await response.json();
 
             console.log(
-                `0g upload file: ${file.name} response: ${JSON.stringify(
+                `walrus upload file: ${file.name} response: ${JSON.stringify(
                     data,
                     null,
                     2
@@ -96,7 +99,8 @@ export function ProgressUpdateDialog({
             }
 
             // 使用 rootHash 作为文件的唯一标识
-            setProofBlobId(data.rootHash);
+            // setProofBlobId(data.rootHash);
+            setProofBlobId(data.blobId);
             setIsFileUploaded(true);
             toast.success(
                 language === "zh"

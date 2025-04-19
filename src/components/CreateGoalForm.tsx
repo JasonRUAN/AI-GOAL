@@ -206,7 +206,7 @@ export function CreateGoalForm() {
 
             // 调用AI生成建议的API
             const response = await fetch(
-                `${CONSTANTS.BACKEND_URL}/0g/get_ai_suggestion`,
+                `${CONSTANTS.BACKEND_URL}/deepseek/get_ai_suggestion`,
                 {
                     method: "POST",
                     headers: {

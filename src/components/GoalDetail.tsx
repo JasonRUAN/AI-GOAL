@@ -698,7 +698,7 @@ export function GoalDetail({ id }: GoalDetailProps) {
                                                                     try {
                                                                         const response =
                                                                             await fetch(
-                                                                                `${CONSTANTS.BACKEND_URL}/0g/download/${update.fields.proof_file_blob_id}`
+                                                                                `${CONSTANTS.BACKEND_URL}/walrus/download/${update.fields.proof_file_blob_id}`
                                                                             );
                                                                         if (
                                                                             !response.ok

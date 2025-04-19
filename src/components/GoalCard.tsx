@@ -20,6 +20,7 @@ import { useLanguage } from "@/providers/LanguageProvider";
 
 export function GoalCard({ goal }: { goal: GoalDetail }) {
     const account = useCurrentAccount();
+
     const { language } = useLanguage();
     const isCreator = goal.creator === account?.address;
 
