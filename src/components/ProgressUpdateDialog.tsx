@@ -19,7 +19,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { useLanguage } from "@/providers/LanguageProvider";
-import { CONSTANTS } from "@/constants";
+// import { CONSTANTS } from "@/constants";
+import { storeBlob } from "@/lib/walrusClient";
 
 interface ProgressUpdateDialogProps {
     goalId: string;
@@ -64,47 +65,18 @@ export function ProgressUpdateDialog({
         setIsUploading(true);
 
         try {
-            const formData = new FormData();
-            formData.append("file", file);
+            const fileBuffer = await file.arrayBuffer();
+            const fileData = new Uint8Array(fileBuffer);
 
-            const response = await fetch(
-                `${CONSTANTS.BACKEND_URL2}/walrus/upload`,
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
+            const blobId = await storeBlob(fileData);
 
-            if (!response.ok) {
-                throw new Error("文件上传失败");
-            }
+            console.log(`walrus upload file: ${file.name} blobId: ${blobId}`);
 
-            const data = await response.json();
-
-            console.log(
-                `walrus upload file: ${file.name} response: ${JSON.stringify(
-                    data,
-                    null,
-                    2
-                )}`
-            );
-
-            if (!data.success) {
-                toast.error(
-                    language === "zh"
-                        ? data.message || "文件上传失败"
-                        : "File upload failed"
-                );
-                throw new Error(data.message || "文件上传失败");
-            }
-
-            // 使用 rootHash 作为文件的唯一标识
-            // setProofBlobId(data.rootHash);
-            setProofBlobId(data.blobId);
+            setProofBlobId(blobId);
             setIsFileUploaded(true);
             toast.success(
                 language === "zh"
-                    ? data.message || "文件上传成功"
+                    ? "文件上传成功"
                     : "File uploaded successfully"
             );
         } catch (error) {
