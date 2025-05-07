@@ -68,7 +68,7 @@ export function ProgressUpdateDialog({
             formData.append("file", file);
 
             const response = await fetch(
-                `${CONSTANTS.BACKEND_URL}/walrus/upload`,
+                `${CONSTANTS.BACKEND_URL2}/walrus/upload`,
                 {
                     method: "POST",
                     body: formData,
