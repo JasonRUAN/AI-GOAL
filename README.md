@@ -2,7 +2,7 @@
 
 ## One-Sentence Summary
 
-AI-GOAL (AI Goal Planner): A goal management platform that integrates **staking mechanism, social witnessing, and AI planning**, helping everyone achieve their goals more scientifically and efficiently.
+AI-GOAL (AI Goal Planner): AI-powered Goal Management & Habit Formation Platform that integrates **AI planning**, **staking mechanism**, and **social witnessing**, helping everyone achieve their goals more scientifically and efficiently.
 
 ## Features
 
