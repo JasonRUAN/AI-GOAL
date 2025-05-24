@@ -11,4 +11,10 @@ AI-GOAL (AI Goal Planner): AI-powered Goal Management & Habit Formation Platform
 - As an open platform, anyone can view the goals published on the platform, leave comments, and make tips. The tip amount will be added to the user's staked token pool.
 - The platform will create an **AI Goal Planner** AI Agent (based on **Eliza + Large Language Model**) for each goal. It can provide suggestions and feasible plans for how users can achieve their goals, and users can interact with the AI Goal Planner through conversation to better accomplish their goals.
 - Platform Revenue: When users or witnesses withdraw staked funds, the platform charges a 1% usage and maintenance fee to ensure sustainable platform operation.
-- The platform may issue its own tokens in the future, providing incentives based on user and witness participation (comments, tips, suggestions, etc.).
+- The platform issue its own token: `AIG`, providing incentives based on user and witness participation (comments, tips, suggestions, etc.).
+
+## Technology Stack
+![](./public/stack.svg)
+
+## Architecture
+![](./public/Architecture_v3.svg)
