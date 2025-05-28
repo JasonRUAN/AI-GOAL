@@ -18,3 +18,10 @@ AI-GOAL (AI Goal Planner): AI-powered Goal Management & Habit Formation Platform
 
 ## Architecture
 ![](./public/Architecture_v3.svg)
+
+## DEMO
+
+- Homepage：https://ai-goal.vercel.app
+- Sui Deployment Network：testnet
+- Demo Video: https://drive.google.com/file/d/16gNfQDMa6UucdEUnXeW1s8geEt4BXTgZ/view?usp=sharing
+- Package ID: [0xf7f41b...66269fb](https://testnet.suivision.xyz/package/0xf7f41b77f157a809064ecded255d1846057b4b888771e0fabf91520ae66269fb?tab=Code)
